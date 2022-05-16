@@ -1,0 +1,5 @@
+facenet-pytorch
+faiss-cpu
+opencv-python
+flask
+greenlet
