@@ -22,6 +22,8 @@ for user in features:
     for feature in features[user]:
         reversed_index.append(user)
         index.add(np.array([feature]))
+        
+threshold = 1.0
 
 def gen(camera):
     global frame
@@ -46,7 +48,8 @@ def gen(camera):
                 
                 if features != None:
                     D, I = index.search(features.detach().numpy(), 1)
-                    cv2.putText(frame, reversed_index[I[0][0]], (int(box[0]), int(box[1])), 0, 5e-3 * 200, (0,255,0), 2)
+                    text = reversed_index[I[0][0]] if D[0][0] < threshold else 'Unknown'
+                    cv2.putText(frame, text, (int(box[0]), int(box[1])), 0, 5e-3 * 200, (0,255,0), 2)
             
             x = cv2.imencode('.jpg', frame)[1].tobytes()
 
