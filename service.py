@@ -1,11 +1,15 @@
 #!/usr/bin/env python
-from flask import Flask, Response, render_template
-from camera import Camera
-import cv2
-from face_detector import FaceDetector
-import faiss
 import pickle
+import sqlite3
+from datetime import datetime
+
+import cv2
+import faiss
 import numpy as np
+from flask import Flask, Response, render_template
+
+from camera import Camera
+from face_detector import FaceDetector
 
 app = Flask(__name__)
 
@@ -17,6 +21,11 @@ reversed_index = []
 
 with open('features.pkl', 'rb') as f:
     features = pickle.load(f)
+    
+db_con = sqlite3.connect("attendance.db")
+cur = db_con.cursor()
+cur.execute("CREATE TABLE IF NOT EXISTS attendance(student, time)")
+db_con.close()
     
 for user in features:
     for feature in features[user]:
@@ -30,6 +39,8 @@ def gen(camera):
     """Video streaming generator function."""
     idx = 0
     boxes = []
+    db_con = sqlite3.connect("attendance.db")
+    cur = db_con.cursor()
     while True:
         # if idx % 10 != 0:
         #     continue
@@ -50,6 +61,22 @@ def gen(camera):
                     D, I = index.search(features.detach().numpy(), 1)
                     text = reversed_index[I[0][0]] if D[0][0] < threshold else 'Unknown'
                     cv2.putText(frame, text, (int(box[0]), int(box[1])), 0, 5e-3 * 200, (0,255,0), 2)
+                    
+                    if text != 'Unknown':
+                        try:
+                            query = f"""
+                            INSERT INTO attendance VALUES
+                            ("{text}", "{datetime.now()}")
+                            """
+                            cur.execute(
+                                query
+                            )
+                        except Exception as e:
+                            print("insert error", e)
+            try:
+                db_con.commit()
+            except Exception as e:
+                print("commit error", e)
             
             x = cv2.imencode('.jpg', frame)[1].tobytes()
 
