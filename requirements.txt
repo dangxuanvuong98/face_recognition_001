@@ -3,3 +3,5 @@ faiss-cpu
 opencv-python
 flask
 greenlet
+pytorch-lightning
+scikit-image
