@@ -5,3 +5,4 @@ flask
 greenlet
 pytorch-lightning
 scikit-image
+omegaconf

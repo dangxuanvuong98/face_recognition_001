@@ -1,0 +1,9 @@
+dataset:
+  train:
+    manifest_path: .local/data/train.json
+  val:
+    manifest_path: .local/data/val.json
+model:
+  x: x
+trainer:
+  max_epochs: 50
