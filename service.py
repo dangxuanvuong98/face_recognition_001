@@ -19,10 +19,10 @@ fd = FaceDetector()
 index = faiss.IndexFlatL2(512)
 reversed_index = []
 
-with open('features.pkl', 'rb') as f:
+with open('./.local/data/features.pkl', 'rb') as f:
     features = pickle.load(f)
     
-db_con = sqlite3.connect("attendance.db")
+db_con = sqlite3.connect("./.local/data/attendance.db")
 cur = db_con.cursor()
 cur.execute("CREATE TABLE IF NOT EXISTS attendance(student, time)")
 db_con.close()
@@ -39,7 +39,7 @@ def gen(camera):
     """Video streaming generator function."""
     idx = 0
     boxes = []
-    db_con = sqlite3.connect("attendance.db")
+    db_con = sqlite3.connect("./.local/data/attendance.db")
     cur = db_con.cursor()
     while True:
         # if idx % 10 != 0:

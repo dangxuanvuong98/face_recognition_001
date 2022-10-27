@@ -5,7 +5,7 @@ from PIL import Image
 
 def main():
     features = dict()
-    users_dir = './users'
+    users_dir = './.local/users'
     subdirs = os.listdir(users_dir)
     for dir in subdirs:
         fd = FaceDetector()
@@ -17,7 +17,7 @@ def main():
             img = Image.open(image_path)
             _, ft = fd.extract(img)
             features[dir].append(ft[0].detach().numpy())
-    with open('features.pkl', 'wb') as f:
+    with open('./.local/data/features.pkl', 'wb') as f:
         pickle.dump(features, f)
 
 if __name__ == '__main__':
